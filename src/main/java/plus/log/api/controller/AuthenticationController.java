@@ -32,7 +32,7 @@ public class AuthenticationController {
         return ResponseEntity.ok().body(token);
     }
 
-    @GetMapping(value="/protected")
+    @PostMapping(value="/protected")
     public ResponseEntity<Object> getProtectedResource(@RequestHeader("Authorization") String authorization) {
         // Extract the token from the Authorization header
         String token = authorization.replaceFirst("Bearer ", "");
@@ -45,12 +45,12 @@ public class AuthenticationController {
                 int  diffInDays = (int) (diffInMilliseconds/(24*60*60*1000));
 
                 if(diffInDays<=7){
-                    return ResponseEntity.ok(user.getUsername());
+                    return ResponseEntity.ok().body("success");
                 }
             }
         }
 
-        return ResponseEntity.ok("login");
+        return ResponseEntity.ok().body("No");
     }
 
     @GetMapping(value="/hi")
