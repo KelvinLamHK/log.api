@@ -3,6 +3,7 @@ package plus.log.api.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import plus.log.api.dto.UserDto;
 import plus.log.api.entity.UserEntity;
 import plus.log.api.parameter.LoginRequest;
 import plus.log.api.repository.UserRepository;
@@ -35,7 +36,7 @@ public class AuthenticationController {
     @PostMapping(value="/protected")
     public ResponseEntity<Object> getProtectedResource(@RequestHeader("Authorization") String authorization) {
         // Extract the token from the Authorization header
-        String token = authorization.replaceFirst("Bearer ", "");
+        String token = authorization.replaceFirst("plus ", "");
 
         if(token!=null){
             UserEntity user = userRepository.findByToken(token);
@@ -53,10 +54,14 @@ public class AuthenticationController {
         return ResponseEntity.ok().body("No");
     }
 
-    @GetMapping(value="/hi")
-    public ResponseEntity<Object> hi() {
-
-        return ResponseEntity.ok().body("yesss");
+    @PostMapping(value="/token")
+    public ResponseEntity<Object> getUser(@RequestHeader("Authorization") String authorization ){
+        String token = authorization.replaceFirst("plus ", "");
+        UserEntity user = userRepository.findByToken(token);
+        UserDto userDto = new UserDto();
+        userDto.setUsername(user.getUsername());
+        return ResponseEntity.ok().body(userDto);
     }
+
 
 }
