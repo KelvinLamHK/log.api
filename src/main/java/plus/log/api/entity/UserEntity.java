@@ -15,8 +15,8 @@ import java.util.Date;
 public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id")
-    private Long id;
+    @Column(name="userid")
+    private Long userid;
 
     @Column(name="username",nullable = false, unique = true)
     private String username;
@@ -27,6 +27,6 @@ public class UserEntity {
     @Column(name="token")
     private String token;
 
-    @Column(name="lastLogin")
-    private Date lastLogin;
+    @Column(name="last_login")
+    private Date last_login;
 }

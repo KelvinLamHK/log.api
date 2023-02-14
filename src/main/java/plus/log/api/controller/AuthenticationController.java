@@ -26,7 +26,7 @@ public class AuthenticationController {
 
         String token = UUID.randomUUID().toString();
         Date date = new Date();
-        user.setLastLogin(date);
+        user.setLast_login(date);
         user.setToken(token);
         userRepository.save(user);
 
@@ -42,7 +42,7 @@ public class AuthenticationController {
             UserEntity user = userRepository.findByToken(token);
             if(user!=null){
                 Date date = new Date();
-                long diffInMilliseconds = date.getTime() - user.getLastLogin().getTime();
+                long diffInMilliseconds = date.getTime() - user.getLast_login().getTime();
                 int  diffInDays = (int) (diffInMilliseconds/(24*60*60*1000));
 
                 if(diffInDays<=7){
