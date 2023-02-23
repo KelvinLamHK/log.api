@@ -41,15 +41,15 @@ public class AuthenticationController {
     }
 
     @PostMapping(value="/protected")
-    public ResponseEntity<Object> getProtectedResource(@RequestHeader("Authorization") String authorization, @RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<Object> getProtectedResource(@RequestHeader("Authorization") String authorization, @RequestHeader("DeviceId") String deviceId) {
         String token;
-        if (authorization != null && loginRequest.getDeviceId() != null && authorization.startsWith("plus ")) {
+        if (authorization != null && deviceId != null && authorization.startsWith("plus ")) {
             token = authorization.replaceFirst("plus ", "");
             LogEntity logEntity = logRepository.findByToken(token);
             Date date = new Date();
             long diffInMilliseconds = date.getTime() - logEntity.getLastLogin().getTime();
             int diffInDays = (int) (diffInMilliseconds / (24 * 60 * 60 * 1000));
-            if (logEntity.getDeviceId().equals(loginRequest.getDeviceId()) && diffInDays <= 7) {
+            if (logEntity.getDeviceId().equals(deviceId) && diffInDays <= 7) {
                 logEntity.setLastLogin(date);
                 logRepository.save(logEntity);
                 UserDto userDto = new UserDto();
