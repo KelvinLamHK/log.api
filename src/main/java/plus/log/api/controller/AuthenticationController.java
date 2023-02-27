@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.UUID;
 
 @RestController
+@CrossOrigin(origins = {"http://localhost:3000", "http://kayu.work:3000"})
 public class AuthenticationController {
     @Autowired
     private UserRepository userRepository;
