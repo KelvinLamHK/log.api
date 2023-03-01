@@ -14,7 +14,7 @@ import java.util.Date;
 import java.util.UUID;
 
 @RestController
-@CrossOrigin(origins = {"http://localhost:3000", "http://kayu.work:3000", "http://kayu.life:3000"})
+@CrossOrigin(origins = {"http://172.29.3.60:3000/", "http://localhost:3000/"})
 public class AuthenticationController {
     @Autowired
     private UserRepository userRepository;
@@ -47,15 +47,20 @@ public class AuthenticationController {
         if (authorization != null && deviceId != null && authorization.startsWith("plus ")) {
             token = authorization.replaceFirst("plus ", "");
             LogEntity logEntity = logRepository.findByToken(token);
-            Date date = new Date();
-            long diffInMilliseconds = date.getTime() - logEntity.getLastLogin().getTime();
-            int diffInDays = (int) (diffInMilliseconds / (24 * 60 * 60 * 1000));
-            if (logEntity.getDeviceId().equals(deviceId) && diffInDays <= 7) {
-                logEntity.setLastLogin(date);
-                logRepository.save(logEntity);
-                UserDto userDto = new UserDto();
-                userDto.setUsername(userRepository.findByLogId(logEntity.getLogId()).getUsername());
-                return ResponseEntity.ok().body(userDto);
+            if(logEntity!=null){
+                Date date = new Date();
+                long diffInMilliseconds = date.getTime() - logEntity.getLastLogin().getTime();
+                int diffInDays = (int) (diffInMilliseconds / (24 * 60 * 60 * 1000));
+                if (logEntity.getDeviceId().equals(deviceId) && diffInDays <= 7) {
+                    logEntity.setLastLogin(date);
+                    logRepository.save(logEntity);
+                    UserEntity userEntity = userRepository.findByLogId(logEntity.getLogId());
+                    if(userEntity!=null) {
+                        UserDto userDto = new UserDto();
+                        userDto.setUsername(userEntity.getUsername());
+                        return ResponseEntity.ok().body(userDto);
+                    }
+                }
             }
         }
         return ResponseEntity.ok().body("Invalid");
